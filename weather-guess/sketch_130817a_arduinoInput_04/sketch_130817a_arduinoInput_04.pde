@@ -18,7 +18,7 @@ float ypos;
 
 
 void setup() {
-  size(400,400);
+  size(800,600);
   smooth();
   frameRate(1);
   
@@ -35,8 +35,8 @@ void draw() {
   fill( map(light, 0,1023, 0,255) );
   
   // x-axis is temperature. y-axis is humidity.
-  xpos = map( ten_t, 400, 1000, 0,width);
-  ypos = map( ten_h, 0,1000, height,0);
+  xpos = map( ten_t, 600, 900, 0,width);
+  ypos = map( ten_h, 300,1000, height,0);
   
   ellipse(xpos,ypos, 4,4);
   }
