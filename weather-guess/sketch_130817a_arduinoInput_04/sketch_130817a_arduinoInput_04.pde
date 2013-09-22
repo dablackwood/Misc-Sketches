@@ -9,7 +9,7 @@ import processing.serial.*;
 import com.onformative.yahooweather.*;
 
 YahooWeather weather;
-int wUpdate = 30000; 
+int wUpdate = 30000; // milliseconds
 
 Serial port;
 String val;
@@ -18,7 +18,10 @@ float temp, humidity;
 int light;
 int ten_t; // 10 * temp (converted to fahrenheit)
 int ten_h; // 10 * humidity
-float xpos, ypos;
+//float xpos, ypos;
+final int MIN_TEMP = 30; // fahrenheit
+final int MAX_TEMP = 80; // fahrenheit
+
 
 int officialT, officialH;
 
@@ -57,7 +60,7 @@ void serialEvent(Serial p) {
   val = trim(val);
   
   String[][] valString = matchAll(val, "(\\d+\\.\\d+)");
-  println(val); 
+//  println(val); // raw text from arduino
   
   humidity = float(valString[0][1] );
   temp = float(valString[1][1] );
@@ -75,6 +78,8 @@ void serialEvent(Serial p) {
   println(officialH +" "+ officialT +" "+ condition); 
   drawDot( 10*officialT, 10*officialH);
   
+  drawLine( 10*officialT, 10*officialH, ten_t, ten_h );
+  
 } 
 
 void drawDot( int tempTenTemp, int tempTenHumidity ) {
@@ -85,8 +90,29 @@ void drawDot( int tempTenTemp, int tempTenHumidity ) {
   fill( map(light, 0,1023, 0,255) );
   
   // x-axis is temperature. y-axis is humidity.
-  xpos = map( tenTemp, 600, 900, 0,width);
-  ypos = map( tenHumidity, 300,1000, height,0);
+  ellipse( mapT(tenTemp), mapH(tenHumidity), 4,4);
+}
+
+void drawLine(  int tempOfficialT, int tempOfficialH, int tempT, int tempH ) {
+  // All inputs 10*value
+  int officialT = tempOfficialT;
+  int officialH = tempOfficialH;
+  int T = tempT;
+  int H = tempH;
+    
+  strokeWeight(2);
+  stroke( map(light, 0,1023, 0,255) );
+  noFill();
+  line( mapT(officialT), mapH(officialH), mapT(T), mapH(H) );
   
-  ellipse(xpos,ypos, 4,4);
+}
+
+float mapT( int tempTenTemp ){
+  int tenTemp = tempTenTemp;
+  return map( tenTemp, 10*MIN_TEMP, 10*MAX_TEMP, 0,width);
+}
+
+float mapH( int tempTenHumidity ){
+  int tenHumidity = tempTenHumidity;
+  return map( tenHumidity, 0,1000, height,0);
 }
