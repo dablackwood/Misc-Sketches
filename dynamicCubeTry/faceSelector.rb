@@ -11,14 +11,15 @@ require 'sketchup.rb'
 class Face_Selector
     
     def initialize
-        puts "Initialized"
+        puts "Face_Selector initialized"
         @obj = nil
         @point = nil
     end
     
     def activate
+        puts "Face_Selector activated"
         @point = Sketchup::InputPoint.new
-        @obj = Sketchup::InputPoint.new
+#         @obj = Sketchup::InputPoint.new
     end
     
     def onLButtonDown(flags, x, y, view)
@@ -35,11 +36,20 @@ class Face_Selector
             status_msg = @obj.area.to_s
             Sketchup::set_status_text(status_msg, SB_VCB_VALUE)
         end # if
+        optional_on_left_fn
     end # onLButtonDown
+    
+    # Override.
+    def optional_on_left_fn
+    end
     
     # Returns nil if no face selected.
     def get_face
-        return @obj
+        if @obj.class == Sketchup::Face
+            @obj
+        else
+            nil
+        end
     end
 
 end # class Face_Selector
